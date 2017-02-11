@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Game : MonoBehaviour {
@@ -11,7 +12,9 @@ public class Game : MonoBehaviour {
 	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
 
     private IEnumerator camMoveCoroutine = null;
+    private CharacterController controller;
 	
+
 	private enum Mode{
 		Top, Side, Iso
 	}
@@ -20,6 +23,7 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		mode = Mode.Top;
+	    controller = player.GetComponent<CharacterController>();
 	}
 	
 	// Update is called once per frame
@@ -64,7 +68,7 @@ public class Game : MonoBehaviour {
 
         }
 
-	    player.transform.position += move;
+	    controller.Move(move);
 
 	}
 
