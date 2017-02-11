@@ -106,7 +106,5 @@ public class Game : MonoBehaviour {
 
         } while (!finished);
 
-        print("Ho!");
-
     }
 }
