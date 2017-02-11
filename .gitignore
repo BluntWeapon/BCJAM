@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> Initial Commit
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -27,4 +31,8 @@ sysinfo.txt
 
 # Builds
 *.apk
+<<<<<<< HEAD
 *.unitypackage
+=======
+*.unitypackage
+>>>>>>> Initial Commit
