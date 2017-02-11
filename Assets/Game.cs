@@ -25,8 +25,8 @@ public class Game : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        //Camera Movement on Perspective Change
 	    bool cameraExecute = false;
-
 	    IEnumerator newCamCoroutine = null;
 	    if (Input.GetKeyDown(KeyCode.D)) {
             newCamCoroutine = moveCamera(Mode.Side);
@@ -39,7 +39,7 @@ public class Game : MonoBehaviour {
 	        cameraExecute = true;
 	    }
 
-	    if (cameraExecute ) {
+	    if (cameraExecute && newCamCoroutine != null) {
             if( camMoveCoroutine != null )
                 StopCoroutine(camMoveCoroutine);
 
@@ -47,6 +47,8 @@ public class Game : MonoBehaviour {
 	        camMoveCoroutine = newCamCoroutine;
 	    }
 		
+
+        //Movement (And Rotation)
 		Vector3 move = Vector3.zero;
 		
 		if( mode == Mode.Top ){
