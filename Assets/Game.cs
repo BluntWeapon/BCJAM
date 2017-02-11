@@ -30,12 +30,15 @@ public class Game : MonoBehaviour {
 	    IEnumerator newCamCoroutine = null;
 	    if (Input.GetKeyDown(KeyCode.D)) {
             newCamCoroutine = moveCamera(Mode.Side);
+            mode = Mode.Side;
 	        cameraExecute = true;
 	    } else if( Input.GetKeyDown ( KeyCode.W ) ) {
             newCamCoroutine = moveCamera ( Mode.Top );
+            mode = Mode.Top;
 	        cameraExecute = true;
 	    } else if (Input.GetKeyDown(KeyCode.A)) {
             newCamCoroutine = moveCamera ( Mode.Iso );
+            mode = Mode.Iso;
 	        cameraExecute = true;
 	    }
 
