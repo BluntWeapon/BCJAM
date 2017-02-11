@@ -25,13 +25,27 @@ public class Game : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	    bool cameraExecute = false;
+
+	    IEnumerator newCamCoroutine = null;
 	    if (Input.GetKeyDown(KeyCode.D)) {
-            camMoveCoroutine = moveCamera(Mode.Side);
-        } else if( Input.GetKeyDown ( KeyCode.W ) ) {
-            camMoveCoroutine = moveCamera ( Mode.Top );
-        } else if (Input.GetKeyDown(KeyCode.A)) {
-            camMoveCoroutine = moveCamera ( Mode.Iso );
-        }
+            newCamCoroutine = moveCamera(Mode.Side);
+	        cameraExecute = true;
+	    } else if( Input.GetKeyDown ( KeyCode.W ) ) {
+            newCamCoroutine = moveCamera ( Mode.Top );
+	        cameraExecute = true;
+	    } else if (Input.GetKeyDown(KeyCode.A)) {
+            newCamCoroutine = moveCamera ( Mode.Iso );
+	        cameraExecute = true;
+	    }
+
+	    if (cameraExecute ) {
+            if( camMoveCoroutine != null )
+                StopCoroutine(camMoveCoroutine);
+
+	        StartCoroutine(newCamCoroutine);
+	        camMoveCoroutine = newCamCoroutine;
+	    }
 		
 		Vector3 move = Vector3.zero;
 		
@@ -68,7 +82,7 @@ public class Game : MonoBehaviour {
         }
 
         do {
-            camera.position = Vector3.Lerp ( camera.position, target.position, 0.2f );
+            camera.position = Vector3.Lerp ( camera.position, target.position, 0.15f );
             camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, 0.2f);
             if (Vector3.Distance(target.position, camera.position) < 0.001f) {
                 finished = true;
