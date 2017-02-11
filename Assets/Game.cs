@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Game : MonoBehaviour {
@@ -11,7 +12,9 @@ public class Game : MonoBehaviour {
 	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
 
     private IEnumerator camMoveCoroutine = null;
+    private CharacterController controller;
 	
+
 	private enum Mode{
 		Top, Side, Iso
 	}
@@ -20,13 +23,14 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		mode = Mode.Top;
+	    controller = player.GetComponent<CharacterController>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
+        //Camera Movement on Perspective Change
 	    bool cameraExecute = false;
-
 	    IEnumerator newCamCoroutine = null;
 	    if (Input.GetKeyDown(KeyCode.D)) {
             newCamCoroutine = moveCamera(Mode.Side);
@@ -42,7 +46,7 @@ public class Game : MonoBehaviour {
 	        cameraExecute = true;
 	    }
 
-	    if (cameraExecute ) {
+	    if (cameraExecute && newCamCoroutine != null) {
             if( camMoveCoroutine != null )
                 StopCoroutine(camMoveCoroutine);
 
@@ -50,6 +54,8 @@ public class Game : MonoBehaviour {
 	        camMoveCoroutine = newCamCoroutine;
 	    }
 		
+
+        //Movement (And Rotation)
 		Vector3 move = Vector3.zero;
 		
 		if( mode == Mode.Top ){
@@ -65,7 +71,7 @@ public class Game : MonoBehaviour {
 
         }
 
-	    player.transform.position += move;
+	    controller.Move(move);
 
 	}
 
