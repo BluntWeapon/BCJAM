@@ -54,8 +54,13 @@ public class Game : MonoBehaviour {
 			if( Input.GetKey( KeyCode.RightArrow ) ){
 		        move += transform.right * 0.1f;
 		    }
-			
-		}
+
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                move += transform.right * -0.1f;
+            }
+
+        }
 
 	    player.transform.position += move;
 
