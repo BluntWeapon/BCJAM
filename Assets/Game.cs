@@ -9,14 +9,12 @@ public class Game : MonoBehaviour {
 	[SerializeField]
 	private Transform player, camera;
     private Vector3 playerSize;
-
-<<<<<<< HEAD
-[SerializeField]
+    
+    [SerializeField]
 	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
-=======
-    [SerializeField] private float SlerpTime = 0.05f;
 
->>>>>>> aafe7ede4bb23af401a7de747d55b50a4e648dfd
+    [SerializeField] private float SlerpTime = 0.05f;
+    
     private IEnumerator camMoveCoroutine = null;
     private CharacterController controller;
 
@@ -37,12 +35,9 @@ public class Game : MonoBehaviour {
 	void Start () {
 		mode = Mode.Top;
 	    controller = player.GetComponent<CharacterController>();
-<<<<<<< HEAD
         playerSize = GameObject.Find("Player").GetComponent<Collider>().bounds.size;
         Debug.Log(playerSize);
-=======
 	    playerRenderer = player.gameObject.GetComponent<Renderer>();
->>>>>>> aafe7ede4bb23af401a7de747d55b50a4e648dfd
 	}
 	
 	// Update is called once per frame
