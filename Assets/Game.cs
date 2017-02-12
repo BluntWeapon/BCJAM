@@ -16,6 +16,13 @@ public class Game : MonoBehaviour {
 
     private IEnumerator camMoveCoroutine = null;
     private CharacterController controller;
+
+    [SerializeField] private Material playerBlue, playerRed;
+    private enum PColor {
+        Red, Blue
+    }
+    private PColor pColor = PColor.Blue;
+    private Renderer playerRenderer;
 	
 
 	private enum Mode{
@@ -27,6 +34,7 @@ public class Game : MonoBehaviour {
 	void Start () {
 		mode = Mode.Top;
 	    controller = player.GetComponent<CharacterController>();
+	    playerRenderer = player.gameObject.GetComponent<Renderer>();
 	}
 	
 	// Update is called once per frame
@@ -55,6 +63,15 @@ public class Game : MonoBehaviour {
 
 	        StartCoroutine(newCamCoroutine);
 	        camMoveCoroutine = newCamCoroutine;
+	    }
+
+        //Color Swap
+	    if (Input.GetMouseButtonDown(0)) {
+	        pColor = PColor.Blue;
+	        playerRenderer.material = playerBlue;
+	    } else if (Input.GetMouseButtonDown(1)) {
+	        pColor = PColor.Red;
+	        playerRenderer.material = playerRed;
 	    }
 		
 
@@ -104,6 +121,7 @@ public class Game : MonoBehaviour {
             camera.position = Vector3.Slerp( camera.position, target.position, SlerpTime );
             camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, SlerpTime );
             if (Vector3.Distance(target.position, camera.position) < 0.01f) {
+                camera.position = target.position;
                 finished = true;
             }
 
