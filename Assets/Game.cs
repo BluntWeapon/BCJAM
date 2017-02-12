@@ -62,16 +62,35 @@ public class Game : MonoBehaviour {
         if( isSwappingPerspective ) return;
 
 
-
-
+        
+        //TODO This doesn't check if colour can be swapped first
         //Color Swap
         if (Input.GetMouseButtonDown(0)) {
 	        pColor = PColor.Blue;
 	        playerRenderer.material = playerBlue;
-	    } else if (Input.GetMouseButtonDown(1)) {
+
+            //Disable all blue colliders
+            foreach (Collider collider in blueColliders) {
+                collider.enabled = false;
+            }
+            //Enable all red colliders
+            foreach( Collider collider in redColliders ) {
+                collider.enabled = true;
+            }
+
+        } else if (Input.GetMouseButtonDown(1)) {
 	        pColor = PColor.Red;
 	        playerRenderer.material = playerRed;
-	    }
+
+            //Disable all red colliders
+            foreach( Collider collider in redColliders ) {
+                collider.enabled = false;
+            }
+            //Enable all blue colliders
+            foreach( Collider collider in blueColliders ) {
+                collider.enabled = enabled;
+            }
+        }
 		
 
         //Movement (And Rotation)
