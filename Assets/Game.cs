@@ -8,6 +8,7 @@ public class Game : MonoBehaviour {
 	
 	[SerializeField]
 	private Transform player, camera;
+<<<<<<< HEAD
     private Vector3 playerSize;
     
     [SerializeField]
@@ -15,6 +16,14 @@ public class Game : MonoBehaviour {
 
     [SerializeField] private float SlerpTime = 0.05f;
     
+=======
+	
+	[SerializeField]
+	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
+
+    [SerializeField] private float SlerpTime = 0.05f;
+
+>>>>>>> f26d73e7b60d1660e2ca9b9fe4e370582a50370c
     private IEnumerator camMoveCoroutine = null;
     private CharacterController controller;
 
@@ -24,6 +33,8 @@ public class Game : MonoBehaviour {
     }
     private PColor pColor = PColor.Blue;
     private Renderer playerRenderer;
+
+    [SerializeField] private List<Collider> blueColliders, redColliders;
 	
 
 	private enum Mode{
@@ -31,51 +42,87 @@ public class Game : MonoBehaviour {
 	}
 	private Mode mode;
 
+    private bool isSwappingPerspective = false;
+
+    [SerializeField] private float jumpVelocity = 4f, gravity = 3f;
+    private float jumping = 0f;
+
 	// Use this for initialization
 	void Start () {
 		mode = Mode.Top;
 	    controller = player.GetComponent<CharacterController>();
+<<<<<<< HEAD
         playerSize = GameObject.Find("Player").GetComponent<Collider>().bounds.size;
         Debug.Log(playerSize);
 	    playerRenderer = player.gameObject.GetComponent<Renderer>();
 	}
+=======
+	    playerRenderer = player.gameObject.GetComponent<Renderer>();
+
+        //Disable all blue colliders
+        foreach( Collider collider in blueColliders ) {
+            collider.enabled = false;
+        }
+        //Enable all red colliders
+        foreach( Collider collider in redColliders ) {
+            collider.enabled = true;
+        }
+    }
+>>>>>>> f26d73e7b60d1660e2ca9b9fe4e370582a50370c
 	
 	// Update is called once per frame
 	void Update () {
 
+        //TODO This doesn't check if dimensions can be changed
         //Camera Movement on Perspective Change
-	    bool cameraExecute = false;
 	    IEnumerator newCamCoroutine = null;
 	    if (Input.GetKeyDown(KeyCode.D)) {
             newCamCoroutine = moveCamera(Mode.Side);
-            mode = Mode.Side;
-	        cameraExecute = true;
 	    } else if( Input.GetKeyDown ( KeyCode.W ) ) {
             newCamCoroutine = moveCamera ( Mode.Top );
-            mode = Mode.Top;
-	        cameraExecute = true;
 	    } else if (Input.GetKeyDown(KeyCode.A)) {
             newCamCoroutine = moveCamera ( Mode.Iso );
-            mode = Mode.Iso;
-	        cameraExecute = true;
 	    }
 
-	    if (cameraExecute && newCamCoroutine != null) {
+        if ( newCamCoroutine != null ) {
             if( camMoveCoroutine != null )
                 StopCoroutine(camMoveCoroutine);
 
 	        StartCoroutine(newCamCoroutine);
 	        camMoveCoroutine = newCamCoroutine;
 	    }
+        if( isSwappingPerspective ) return;
 
+
+        
+        //TODO This doesn't check if colour can be swapped first
         //Color Swap
-	    if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0)) {
 	        pColor = PColor.Blue;
 	        playerRenderer.material = playerBlue;
-	    } else if (Input.GetMouseButtonDown(1)) {
+
+            //Disable all blue colliders
+            foreach (Collider collider in blueColliders) {
+                collider.enabled = false;
+            }
+            //Enable all red colliders
+            foreach( Collider collider in redColliders ) {
+                collider.enabled = true;
+            }
+
+        } else if (Input.GetMouseButtonDown(1)) {
 	        pColor = PColor.Red;
 	        playerRenderer.material = playerRed;
-	    }
+
+            //Disable all red colliders
+            foreach( Collider collider in redColliders ) {
+                collider.enabled = false;
+            }
+            //Enable all blue colliders
+            foreach( Collider collider in blueColliders ) {
+                collider.enabled = enabled;
+            }
+        }
 		
 
         //Movement (And Rotation)
@@ -107,54 +154,33 @@ public class Game : MonoBehaviour {
                 move += transform.right * -0.1f;
             }
 
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                jumping = jumpVelocity;
+            }
+            else if ( !controller.isGrounded ) {
+                jumping -= gravity;
+            } else if (controller.isGrounded) {
+                jumping = 0f;
+            }
+
+            move += transform.up * jumping;
+
         }
 
         controller.Move(move);
-
-        //Raycast downwards from edge. Detects green, red and blue box collisions and passes.
-        raycastDetection();
-
-    }
-
-    //Indicator for whether we're done
-    void raycastDetection() {
-        // -A explanation-
-        // This creates a copy of the Vector3 instead of referencing it from GameObject.Find actual Object. V3's are struct. Structs are on the stack instead of the heap.
-        // This is different from how C++ deals with Structs, because this is C#. Structs vs Object. C# has this integrated into because it has C++ blood.
-        float playerY = 0; // If statements won't initialize variables. This needs to be here to initialize.
-        Vector3 playerPosition = GameObject.Find("Player").transform.position;  
-        Vector3 hoverDistance = new Vector3 (0, 10.0f, 0);
-        Vector3 rayOrigin = new Vector3(playerPosition.x, playerPosition.y - (playerSize.y / 2), playerPosition.z);
-        Vector3 btm = GameObject.Find("Player").transform.TransformDirection(-Vector3.up);
-        // Vector3 fwd = GameObject.Find("Player").transform.TransformDirection(Vector3.right);
-
-        Ray ray = new Ray (rayOrigin, btm);
-        RaycastHit hit;
-
-        if (mode == Mode.Top)
-        {
-            GameObject.Find("Player").transform.position = new Vector3(playerPosition.x, 5, playerPosition.z); // Add fixed distance from topmost surface.
-            // playerPosition = new Vector3 (playerPosition.x, 5, playerPosition.z); // This is incorrectly. // Refer to -A explanation- 
-        }
-
-        if (Physics.Raycast(ray, out hit)) {
-            Debug.DrawRay( ray.origin, hit.point - ray.origin, Color.red);
-            // Debug.Log(hit.point.y);
-            playerY = hit.point.y;
-        }
-
-        if (mode == Mode.Side) {
-            GameObject.Find("Player").transform.position = new Vector3(playerPosition.x, playerY + (playerSize.y / 2), playerPosition.z); // Add fixed distance from topmost surface.
-            // playerPosition = new Vector3 (playerPosition.x, 5, playerPosition.z); // This is incorrectly. // Refer to -A explanation- 
-        }
-
 
     }
 
     IEnumerator moveCamera(Mode targetMode) {
 
+        if( mode == Mode.Top && targetMode != Mode.Top ) {//TODO This check should be done somewhere else
+            RaycastHit hit;
+            Physics.Raycast ( new Ray ( player.position, Vector3.down ), out hit, 60f );
+            player.position = new Vector3 ( player.position.x, hit.point.y + 1.001f, player.position.z );
+        }
+
         //Indicator for whether we're done
-        bool finished = false;
+        isSwappingPerspective = true;
 
         Transform target;
         switch (targetMode) {
@@ -172,18 +198,43 @@ public class Game : MonoBehaviour {
         }
 
 
-
         do {
             camera.position = Vector3.Slerp( camera.position, target.position, SlerpTime );
             camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, SlerpTime );
             if (Vector3.Distance(target.position, camera.position) < 0.01f) {
                 camera.position = target.position;
-                finished = true;
+
+                if (targetMode == Mode.Top) {
+                    player.position = new Vector3( player.position.x, 25f, player.position.z );
+                }
+
+                SwitchDimension( targetMode );
+
+                mode = targetMode;
+                isSwappingPerspective = false;
+                break;
             }
 
             yield return 1; // Break for a frame
 
-        } while (!finished);
+        } while (isSwappingPerspective);
 
     }
+
+    private void SwitchDimension(Mode targetDimension) {
+
+        switch (targetDimension) {
+            case Mode.Top:
+                player.gameObject.layer = 8;
+                break;
+            case Mode.Side:
+                player.gameObject.layer = 9;
+                break;
+            case Mode.Iso:
+                player.gameObject.layer = 10;
+                break;
+        }
+
+    }
+
 }
