@@ -145,8 +145,4 @@ public class Game : MonoBehaviour {
 
     }
 
-    private void SetPlayerHigh() {
-        
-    }
-
 }
