@@ -37,6 +37,8 @@ public class Game : MonoBehaviour {
     [SerializeField] private float jumpVelocity = 4f, gravity = 3f;
     private float jumping = 0f;
 
+    [SerializeField] private float moveSpeed = 4f;
+
 	// Use this for initialization
 	void Start () {
 		mode = Mode.Top;
@@ -114,12 +116,12 @@ public class Game : MonoBehaviour {
 		if( mode == Mode.Top ){
 			
 			if( Input.GetKey( KeyCode.RightArrow ) ){
-		        move += transform.right * 0.1f;
+		        move += transform.right * moveSpeed * Time.deltaTime;
 		    }
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                move += transform.right * -0.1f;
+                move += -transform.right * moveSpeed * Time.deltaTime;
             }
 
         }
@@ -129,24 +131,24 @@ public class Game : MonoBehaviour {
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                move += transform.right * 0.1f;
+                move += transform.right * moveSpeed  * Time.deltaTime;
             }
 
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                move += transform.right * -0.1f;
+                move += -transform.right * moveSpeed * Time.deltaTime;
             }
 
             if (Input.GetKeyDown(KeyCode.Space)) {
                 jumping = jumpVelocity;
             }
             else if ( !controller.isGrounded ) {
-                jumping -= gravity;
+                jumping -= gravity * Time.deltaTime;
             } else if (controller.isGrounded) {
                 jumping = 0f;
             }
 
-            move += transform.up * jumping;
+            move += transform.up * jumping * Time.deltaTime;
 
         }
 
@@ -158,7 +160,7 @@ public class Game : MonoBehaviour {
 
         if( mode == Mode.Top && targetMode != Mode.Top ) {//TODO This check should be done somewhere else
             RaycastHit hit;
-            Physics.Raycast ( new Ray ( player.position, Vector3.down ), out hit, 60f );
+            Physics.SphereCast( new Ray ( player.position, Vector3.down ), 0.5f , out hit, 60f );
             player.position = new Vector3 ( player.position.x, hit.point.y + 1.001f, player.position.z );
         }
 

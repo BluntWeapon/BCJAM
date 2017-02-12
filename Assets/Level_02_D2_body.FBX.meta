@@ -1,28 +1,22 @@
 fileFormatVersion: 2
-guid: 613655de66e38694b944b97814b63ac9
-timeCreated: 1486869697
+guid: 93874988135e9f54691c6b1e27dadf6b
+timeCreated: 1486879699
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Blue001
-    100002: Green001
-    100004: //RootNode
-    100006: lvl02
-    400000: Blue001
-    400002: Green001
-    400004: //RootNode
-    400006: lvl02
-    2300000: Blue001
-    2300002: Green001
-    2300004: lvl02
-    3300000: Blue001
-    3300002: Green001
-    3300004: lvl02
-    4300000: lvl02
-    4300002: Green001
-    4300004: Blue001
-    7400000: Take 001
+    100000: //RootNode
+    100002: lvl02_D2_green
+    100004: lvl02_D2_white
+    400000: //RootNode
+    400002: lvl02_D2_green
+    400004: lvl02_D2_white
+    2300000: lvl02_D2_green
+    2300002: lvl02_D2_white
+    3300000: lvl02_D2_green
+    3300002: lvl02_D2_white
+    4300000: lvl02_D2_green
+    4300002: lvl02_D2_white
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -48,7 +42,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 10
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
