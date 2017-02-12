@@ -7,10 +7,10 @@ public class Game : MonoBehaviour {
 	
 	[SerializeField]
 	private Transform player, camera;
-	
-	[SerializeField]
-	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
+    private Vector3 playerSize;
 
+[SerializeField]
+	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
     private IEnumerator camMoveCoroutine = null;
     private CharacterController controller;
 	
@@ -24,6 +24,8 @@ public class Game : MonoBehaviour {
 	void Start () {
 		mode = Mode.Top;
 	    controller = player.GetComponent<CharacterController>();
+        playerSize = GameObject.Find("Player").GetComponent<Collider>().bounds.size;
+        Debug.Log(playerSize);
 	}
 	
 	// Update is called once per frame
@@ -71,9 +73,62 @@ public class Game : MonoBehaviour {
 
         }
 
-	    controller.Move(move);
+        if (mode == Mode.Side)
+        {
 
-	}
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                move += transform.right * 0.1f;
+            }
+
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                move += transform.right * -0.1f;
+            }
+
+        }
+
+        controller.Move(move);
+
+        //Raycast downwards from edge. Detects green, red and blue box collisions and passes.
+        raycastDetection();
+
+    }
+
+    //Indicator for whether we're done
+    void raycastDetection() {
+        // -A explanation-
+        // This creates a copy of the Vector3 instead of referencing it from GameObject.Find actual Object. V3's are struct. Structs are on the stack instead of the heap.
+        // This is different from how C++ deals with Structs, because this is C#. Structs vs Object. C# has this integrated into because it has C++ blood.
+        float playerY = 0; // If statements won't initialize variables. This needs to be here to initialize.
+        Vector3 playerPosition = GameObject.Find("Player").transform.position;  
+        Vector3 hoverDistance = new Vector3 (0, 10.0f, 0);
+        Vector3 rayOrigin = new Vector3(playerPosition.x, playerPosition.y - (playerSize.y / 2), playerPosition.z);
+        Vector3 btm = GameObject.Find("Player").transform.TransformDirection(-Vector3.up);
+        // Vector3 fwd = GameObject.Find("Player").transform.TransformDirection(Vector3.right);
+
+        Ray ray = new Ray (rayOrigin, btm);
+        RaycastHit hit;
+
+        if (mode == Mode.Top)
+        {
+            GameObject.Find("Player").transform.position = new Vector3(playerPosition.x, 5, playerPosition.z); // Add fixed distance from topmost surface.
+            // playerPosition = new Vector3 (playerPosition.x, 5, playerPosition.z); // This is incorrectly. // Refer to -A explanation- 
+        }
+
+        if (Physics.Raycast(ray, out hit)) {
+            Debug.DrawRay( ray.origin, hit.point - ray.origin, Color.red);
+            // Debug.Log(hit.point.y);
+            playerY = hit.point.y;
+        }
+
+        if (mode == Mode.Side) {
+            GameObject.Find("Player").transform.position = new Vector3(playerPosition.x, playerY + (playerSize.y / 2), playerPosition.z); // Add fixed distance from topmost surface.
+            // playerPosition = new Vector3 (playerPosition.x, 5, playerPosition.z); // This is incorrectly. // Refer to -A explanation- 
+        }
+
+
+    }
 
     IEnumerator moveCamera(Mode targetMode) {
 
