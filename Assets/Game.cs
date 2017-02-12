@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Game : MonoBehaviour {
 	
@@ -10,6 +11,8 @@ public class Game : MonoBehaviour {
 	
 	[SerializeField]
 	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
+
+    [SerializeField] private float SlerpTime = 0.05f;
 
     private IEnumerator camMoveCoroutine = null;
     private CharacterController controller;
@@ -95,10 +98,12 @@ public class Game : MonoBehaviour {
                 yield break;
         }
 
+
+
         do {
-            camera.position = Vector3.Lerp ( camera.position, target.position, 0.15f );
-            camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, 0.2f);
-            if (Vector3.Distance(target.position, camera.position) < 0.001f) {
+            camera.position = Vector3.Slerp( camera.position, target.position, SlerpTime );
+            camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, SlerpTime );
+            if (Vector3.Distance(target.position, camera.position) < 0.01f) {
                 finished = true;
             }
 
