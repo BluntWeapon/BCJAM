@@ -152,6 +152,38 @@ public class Game : MonoBehaviour {
 
         }
 
+	    if (mode == Mode.Iso) {
+
+            if( Input.GetKey ( KeyCode.RightArrow ) ) {
+                move += transform.right * moveSpeed * Time.deltaTime;
+            }
+
+            if( Input.GetKey ( KeyCode.LeftArrow ) ) {
+                move += -transform.right * moveSpeed * Time.deltaTime;
+            }
+
+            if( Input.GetKeyDown ( KeyCode.Space ) ) {
+                jumping = jumpVelocity;
+            } else if( !controller.isGrounded ) {
+                jumping -= gravity * Time.deltaTime;
+            } else if( controller.isGrounded ) {
+                jumping = 0f;
+            }
+
+            move += transform.up * jumping * Time.deltaTime;
+
+            if (Input.GetKey(KeyCode.UpArrow)) {
+	            move += transform.forward * moveSpeed * Time.deltaTime;
+	        }
+
+	        if (Input.GetKey(KeyCode.DownArrow)) {
+	            move += -transform.forward * moveSpeed * Time.deltaTime;
+	        }
+
+        }
+
+
+
         controller.Move(move);
 
     }
