@@ -23,6 +23,8 @@ public class Game : MonoBehaviour {
     }
     private PColor pColor = PColor.Blue;
     private Renderer playerRenderer;
+
+    [SerializeField] private List<Collider> blueColliders, redColliders;
 	
 
 	private enum Mode{
@@ -203,8 +205,10 @@ public class Game : MonoBehaviour {
                 camera.position = target.position;
 
                 if (targetMode == Mode.Top) {
-                    player.position = new Vector3( player.position.x, 40f, player.position.z );
+                    player.position = new Vector3( player.position.x, 25f, player.position.z );
                 }
+
+                SwitchDimension( targetMode );
 
                 mode = targetMode;
                 isSwappingPerspective = false;
@@ -214,6 +218,22 @@ public class Game : MonoBehaviour {
             yield return 1; // Break for a frame
 
         } while (isSwappingPerspective);
+
+    }
+
+    private void SwitchDimension(Mode targetDimension) {
+
+        switch (targetDimension) {
+            case Mode.Top:
+                player.gameObject.layer = 8;
+                break;
+            case Mode.Side:
+                player.gameObject.layer = 9;
+                break;
+            case Mode.Iso:
+                player.gameObject.layer = 10;
+                break;
+        }
 
     }
 
