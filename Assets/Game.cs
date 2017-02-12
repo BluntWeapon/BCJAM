@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Game : MonoBehaviour {
 	
@@ -9,10 +10,22 @@ public class Game : MonoBehaviour {
 	private Transform player, camera;
     private Vector3 playerSize;
 
+<<<<<<< HEAD
 [SerializeField]
 	private Transform CamPositionTop, CamPositionSide, CamPositionIso;
+=======
+    [SerializeField] private float SlerpTime = 0.05f;
+
+>>>>>>> aafe7ede4bb23af401a7de747d55b50a4e648dfd
     private IEnumerator camMoveCoroutine = null;
     private CharacterController controller;
+
+    [SerializeField] private Material playerBlue, playerRed;
+    private enum PColor {
+        Red, Blue
+    }
+    private PColor pColor = PColor.Blue;
+    private Renderer playerRenderer;
 	
 
 	private enum Mode{
@@ -24,8 +37,12 @@ public class Game : MonoBehaviour {
 	void Start () {
 		mode = Mode.Top;
 	    controller = player.GetComponent<CharacterController>();
+<<<<<<< HEAD
         playerSize = GameObject.Find("Player").GetComponent<Collider>().bounds.size;
         Debug.Log(playerSize);
+=======
+	    playerRenderer = player.gameObject.GetComponent<Renderer>();
+>>>>>>> aafe7ede4bb23af401a7de747d55b50a4e648dfd
 	}
 	
 	// Update is called once per frame
@@ -54,6 +71,15 @@ public class Game : MonoBehaviour {
 
 	        StartCoroutine(newCamCoroutine);
 	        camMoveCoroutine = newCamCoroutine;
+	    }
+
+        //Color Swap
+	    if (Input.GetMouseButtonDown(0)) {
+	        pColor = PColor.Blue;
+	        playerRenderer.material = playerBlue;
+	    } else if (Input.GetMouseButtonDown(1)) {
+	        pColor = PColor.Red;
+	        playerRenderer.material = playerRed;
 	    }
 		
 
@@ -150,10 +176,13 @@ public class Game : MonoBehaviour {
                 yield break;
         }
 
+
+
         do {
-            camera.position = Vector3.Lerp ( camera.position, target.position, 0.15f );
-            camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, 0.2f);
-            if (Vector3.Distance(target.position, camera.position) < 0.001f) {
+            camera.position = Vector3.Slerp( camera.position, target.position, SlerpTime );
+            camera.rotation = Quaternion.Slerp(camera.rotation, target.rotation, SlerpTime );
+            if (Vector3.Distance(target.position, camera.position) < 0.01f) {
+                camera.position = target.position;
                 finished = true;
             }
 
